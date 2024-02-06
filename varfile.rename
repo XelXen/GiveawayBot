@@ -1,0 +1,26 @@
+# List of admin IDs 
+admins = [0, 0, 0] 
+
+# Group ID (Always starts with -)
+group_id = -100
+
+# Channel ID (Always starts with -)
+channel_id = -100
+
+# Test group ID (Always starts with -)
+test_group_id = -100
+
+# Test channel ID (Always starts with -)
+test_channel_id = -100
+
+# Bot token (Get it from @BotFather)
+bot_token = "1234:abcd" 
+
+# Database file name
+database = "database.fs" 
+
+# Test mode (True/False)
+test_mode = False 
+
+# Bot username
+bot_username = "username"
