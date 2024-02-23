@@ -31,7 +31,19 @@ if varfile.test_mode:
     group_id = varfile.test_group_id
 
 print("Initializing Database...")
-root = database.create_db()
+if not os.path.exists(path=varfile.database):
+    database.create_db()
+
+class Root:
+    def __init__(self, database: database):
+        self.database = database
+        self.data = self.database.load_db()
+
+    def __getitem__(self, key):
+        self.data = self.database.load_db()
+        return self.data[key]
+
+root = Root(database=database)
 
 
 def preliminaries():
@@ -101,6 +113,7 @@ async def poster(_, message: Message):
         await message.reply(text="Sent!")
 
     else:
+
         if root["post_id"] == None:
             return
 
@@ -127,8 +140,7 @@ async def poster(_, message: Message):
             )
 
             if (root["time"]["total"] - i) % 60 == 0:
-                root["time"]["left"] = root["time"]["total"] - i
-                database.save_db(data=root)
+                database.set_time(total=root["time"]["total"], left=root["time"]["total"] - i)
 
             await asyncio.sleep(delay=1)
 
@@ -211,7 +223,7 @@ async def poster(_, message: Message):
 async def start(_, message: Message):
     if len(message.command) == 1:
         return
-
+    
     if message.command[1] == "register":
         if (
             root["post_id"] == None
@@ -224,7 +236,7 @@ async def start(_, message: Message):
         printlog(message=f"Registering {message.from_user.id}...")
 
         if message.from_user.id not in root["users"]:
-            database.add_user(user_id=message.from_user.id)
+            database.add_user(user=message.from_user.id)
 
             if len(root["users"]) % 10 == 0:
                 await app.send_message(
@@ -239,6 +251,7 @@ async def start(_, message: Message):
         return
 
     elif message.command[1] == "redeem":
+
         if message.from_user.id not in root["chosen"]:
             return
 
@@ -322,8 +335,7 @@ async def settime(_, message: Message):
     try:
         printlog(f"Setting time to {message.text.split(' ')[1]} hours...")
 
-        root["time"]["total"] = round(float(message.command[1]) * 3600)
-        database.save_db(data=root)
+        database.set_time(total=int(message.text.split(" ")[1]) * 3600, left=0)
 
         printlog(f"Time set to {root['time']['total']/3600} hours!")
 
