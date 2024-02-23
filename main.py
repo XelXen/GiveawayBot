@@ -132,15 +132,16 @@ async def poster(_, message: Message):
 
         printlog(message="Starting Timer...")
         zfill_num = len(str(object=root["time"]["total"]))
+        total = root["time"]["total"]
 
-        for i in range(round(number=root["time"]["total"])):
+        for i in range(round(number=total)):
             print(
-                "Time left: " + str(object=root["time"]["total"] - i).zfill(zfill_num),
+                "Time left: " + str(object=total - i).zfill(zfill_num),
                 end="\r",
             )
 
-            if (root["time"]["total"] - i) % 60 == 0:
-                database.set_time(total=root["time"]["total"], left=root["time"]["total"] - i)
+            if (total - i) % 60 == 0:
+                database.set_time(total=total, left=total - i)
 
             await asyncio.sleep(delay=1)
 
