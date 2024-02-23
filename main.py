@@ -201,7 +201,8 @@ async def poster(_, message: Message):
             + "\n".join([x for x in root["codes"] if x not in root["used_codes"]])
         )
 
-        quit()
+        database.clear_db()
+        printlog(message="Bot has been reset!")
 
 
 @app.on_message(
