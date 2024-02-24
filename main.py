@@ -165,7 +165,7 @@ async def poster(_, message: Message):
                     continue
                 break
 
-            database.mark_chosen(user_id=user.id)
+            database.mark_chosen(user=user.id)
 
         printlog(message="Sending Messages...")
         for i in range(len(codes)):
