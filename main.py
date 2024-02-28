@@ -29,6 +29,9 @@ if varfile.test_mode:
     print("Test Mode Activated!")
     channel_id = varfile.test_channel_id
     group_id = varfile.test_group_id
+else:
+    channel_id = varfile.channel_id
+    group_id = varfile.group_id
 
 print("Initializing Database...")
 if not os.path.exists(path=varfile.database):
@@ -119,6 +122,7 @@ async def poster(_, message: Message):
 
         if root["time"]["total"] == 0:
             await message.reply(text="Time not set!")
+            return
 
         printlog(message=f"Collecting Codes...")
         await message.reply(
@@ -126,9 +130,11 @@ async def poster(_, message: Message):
         )
 
         printlog(message="Configuring Variables...")
-        codes = message.text.split(sep="\n")
-        database.clear_chosen()
-        database.add_codes(codes=codes)
+        # codes = message.text.split(sep="\n")
+        # database.clear_chosen()
+        # database.add_codes(codes=codes)
+
+        codes = root["codes"]
 
         printlog(message="Starting Timer...")
         zfill_num = len(str(object=root["time"]["total"]))
@@ -263,7 +269,7 @@ async def start(_, message: Message):
                 text="You've won the giveaway! Here's your redeem code: " + code
             )
 
-            database.mark_used(code=code, user_id=message.from_user.id)
+            database.mark_used(code=code)
 
             try:
                 printlog(message=f"{code} has been redeemed by {message.from_user.first_name}")

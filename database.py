@@ -153,7 +153,7 @@ def remove_user(user: int, data: dict = None, filename: str = varfile.database) 
         return False
 
 
-def add_codes(codes: str, data: dict = None, filename: str = varfile.database) -> bool:
+def add_codes(codes: list, data: dict = None, filename: str = varfile.database) -> bool:
     if data == None:
         try:
             data = load_db(filename=filename)
