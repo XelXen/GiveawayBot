@@ -193,7 +193,7 @@ def mark_used(code: str, data: dict = None, filename: str = varfile.database) ->
         return False
 
     try:
-        data["used_codes"].append(code)
+        data["used_codes"].add(code)
         save_db(data=data, filename=filename)
         printlog(f"Code {code} marked as used")
         return True
