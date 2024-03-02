@@ -88,13 +88,13 @@ def printlog(message, end=""):
         ]
     )
 )
-async def poster(_, message: Message):
+async def poster(client: pyrogram.Client, message: Message):
     printlog(message=f"Message received from {message.from_user.id}!")
     if message.caption:
         printlog(message=f"Sending Post to channel...")
-        message_sent = await app.send_photo(
+        message_sent = await client.send_photo(
             chat_id=channel_id,
-            caption=message.caption.markdown,
+            caption=message.caption.markdown + "\n\nTotal Registrations: Please wait...",
             photo=message.photo.file_id,
             reply_markup=InlineKeyboardMarkup(
                 inline_keyboard=[
@@ -130,11 +130,9 @@ async def poster(_, message: Message):
         )
 
         printlog(message="Configuring Variables...")
-        # codes = message.text.split(sep="\n")
-        # database.clear_chosen()
-        # database.add_codes(codes=codes)
-
-        codes = root["codes"]
+        codes = message.text.split(sep="\n")
+        database.clear_chosen()
+        database.add_codes(codes=codes)
 
         printlog(message="Starting Timer...")
         zfill_num = len(str(object=root["time"]["total"]))
@@ -153,7 +151,7 @@ async def poster(_, message: Message):
 
         printlog(message="\nEnding Giveaway...")
         try:
-            await app.edit_message_reply_markup(
+            await client.edit_message_reply_markup(
                 chat_id=channel_id, message_id=root["post_id"], reply_markup=None
             )
         except:
@@ -163,7 +161,7 @@ async def poster(_, message: Message):
         for _ in range(len(codes)):
             while True:
                 try:
-                    user = await app.get_users(
+                    user = await client.get_users(
                         user_ids=random.choice(seq=list(root["users"]))
                     )
                 except Exception as e:
@@ -175,9 +173,9 @@ async def poster(_, message: Message):
 
         printlog(message="Sending Messages...")
         for i in range(len(codes)):
-            user = await app.get_users(user_ids=root["chosen"][i])
+            user = await client.get_users(user_ids=root["chosen"][i])
 
-            await app.send_message(
+            await client.send_message(
                 chat_id=group_id,
                 text=f"{user.mention()}:[{root['chosen'][i]}](tg://user?id={root['chosen'][i]}) click on the button below to receive your present! You have 6 hours to do so :D",
                 reply_markup=InlineKeyboardMarkup(
@@ -197,14 +195,14 @@ async def poster(_, message: Message):
         database.clear_post_id()
 
         printlog(message="Sending Winner List...")
-        users = await app.get_users(user_ids=root["chosen"])
-        msg = await app.send_message(
+        users = await client.get_users(user_ids=root["chosen"])
+        msg = await client.send_message(
             chat_id=group_id,
             text="Giveaway has ended! List of winners: \n"
             + "\n".join([f"{x.mention()}:{x.id}" for x in users])
             + "\n\nBot by @XelteXynos",
         )
-        await app.pin_chat_message(chat_id=group_id, message_id=msg.id)
+        await client.pin_chat_message(chat_id=group_id, message_id=msg.id)
 
         printlog(message="Starting Timer...\n")
         for i in range(21600):
@@ -227,7 +225,7 @@ async def poster(_, message: Message):
 @app.on_message(
     filters=filters.command(commands="start", prefixes="/") & filters.private
 )
-async def start(_, message: Message):
+async def start(client: pyrogram.Client, message: Message):
     if len(message.command) == 1:
         return
     
@@ -246,9 +244,10 @@ async def start(_, message: Message):
             database.add_user(user=message.from_user.id)
 
             if len(root["users"]) % 10 == 0:
-                await app.send_message(
-                    chat_id=group_id,
-                    text=f'{len(root["users"])}+ users have registered!',
+                await client.edit_message_caption(
+                    chat_id=channel_id,
+                    message_id=root["post_id"],
+                    caption=f"{"\n".join(message.caption.markdown.split("\n")[:-2])}\n\nTotal Registrations: {len(root['users'])}",
                 )
 
             printlog(message=f"User {str(object=message.from_user.id)} has registered!")
@@ -356,10 +355,10 @@ async def settime(_, message: Message):
     & filters.user(users=varfile.admins)
     & filters.private
 )
-async def ban(_, message: Message):
+async def ban(client: pyrogram.Client, message: Message):
     printlog(f"Banning user on command of {message.from_user.id}...")
     try:
-        user_id = await app.get_users(user_ids=message.command[1])
+        user_id = await client.get_users(user_ids=message.command[1])
         user_id = user_id.id
     except:
         await message.reply("Invalid User!")
@@ -384,10 +383,10 @@ async def ban(_, message: Message):
     & filters.user(users=varfile.admins)
     & filters.private
 )
-async def unban(_, message: Message):
+async def unban(client: pyrogram.Client, message: Message):
     printlog(f"Unbanning user on command of {message.from_user.id}...")
     try:
-        user_id = await app.get_users(user_ids=message.command[1])
+        user_id = await client.get_users(user_ids=message.command[1])
         user_id = user_id.id
     except:
         await message.reply("Invalid User!")
