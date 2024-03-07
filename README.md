@@ -23,8 +23,8 @@ Manage giveaways on Telegram using a simple pyrogram script :D
 
 ## Installation
 
-1. Clone the repository: `git clone https://github.com/xelxen/giveawaybot.git`
-2. Open the repository: `cd GiveawayBot`
+1. Download the [latest release zip](https://github.com/XelXen/GiveawayBot/releases/latest) and extract it to a folder
+2. Open the repository folder in the terminal
 3. Install the requirements: `pip install -r requirements.txt`
 4. Rename `varfile.rename` to `varfile.py`
 
