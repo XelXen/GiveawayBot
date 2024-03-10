@@ -21,11 +21,11 @@ def printlog(message: str, end: str = "") -> bool:
             print(message)
         
         if not varfile.test_mode:
-            current_time = datetime.now().strftime("%H:%M:%S")
-            current_date = datetime.now().strftime("%Y-%m-%d")
-            if not os.path.exists("logs"):
-                os.makedirs("logs")
-            with open((os.path.join("logs", f"database_{current_date}.log")), "a+", encoding="utf-8") as log:
+            current_time = datetime.now().strftime(format="%H:%M:%S")
+            current_date = datetime.now().strftime(format="%Y-%m-%d")
+            if not os.path.exists(path="logs"):
+                os.makedirs(name="logs")
+            with open(file=(os.path.join("logs", f"database_{current_date}.log")), mode="a+", encoding="utf-8") as log:
                 log.write(f"[{current_time}] {message}\n")
 
         return True
@@ -120,7 +120,7 @@ def add_user(user: int, data: dict = None, filename: str = varfile.database) -> 
     try:
         data["users"].add(user)
         save_db(data=data, filename=filename)
-        printlog(f"User {user} added to database")
+        printlog(message=f"User {user} added to database")
         return True
 
     except Exception as e:
@@ -145,7 +145,7 @@ def remove_user(user: int, data: dict = None, filename: str = varfile.database) 
     try:
         data["users"].remove(user)
         save_db(data=data, filename=filename)
-        printlog(f"User {user} removed from database")
+        printlog(message=f"User {user} removed from database")
         return True
 
     except Exception as e:
@@ -167,7 +167,7 @@ def add_codes(codes: list, data: dict = None, filename: str = varfile.database) 
     try:
         data["codes"] = codes
         save_db(data=data, filename=filename)
-        printlog(f"Codes added to database")
+        printlog(message=f"Codes added to database")
         return True
 
     except Exception as e:
@@ -195,7 +195,7 @@ def mark_used(code: str, data: dict = None, filename: str = varfile.database) ->
     try:
         data["used_codes"].add(code)
         save_db(data=data, filename=filename)
-        printlog(f"Code {code} marked as used")
+        printlog(message=f"Code {code} marked as used")
         return True
 
     except Exception as e:
@@ -219,7 +219,7 @@ def ban_user(user: int, data: dict = None, filename: str = varfile.database) -> 
     try:
         data["banned"].add(user)
         save_db(data=data, filename=filename)
-        printlog(f"User {user} banned")
+        printlog(message=f"User {user} banned")
         return True
 
     except Exception as e:
@@ -244,7 +244,7 @@ def unban_user(user: int, data: dict = None, filename: str = varfile.database) -
     try:
         data["banned"].remove(user)
         save_db(data=data, filename=filename)
-        printlog(f"User {user} unbanned")
+        printlog(message=f"User {user} unbanned")
         return True
 
     except Exception as e:
@@ -263,7 +263,7 @@ def set_post_id(post_id: int, data: dict = None, filename: str = varfile.databas
     try:
         data["post_id"] = post_id
         save_db(data=data, filename=filename)
-        printlog(f"Post ID set to {post_id}")
+        printlog(message=f"Post ID set to {post_id}")
         return True
 
     except Exception as e:
@@ -282,7 +282,7 @@ def set_time(total: int, left: int = 0, data: dict = None, filename: str = varfi
     try:
         data["time"] = {"total": total, "left": left}
         save_db(data=data, filename=filename)
-        printlog(f"Time set to {total} total, {left} left")
+        printlog(message=f"Time set to {total} total, {left} left")
         return True
 
     except Exception as e:
@@ -307,7 +307,7 @@ def mark_chosen(user: int, data: dict = None, filename: str = varfile.database) 
         data["chosen"].append(user)
         data["users"].remove(user)
         save_db(data=data, filename=filename)
-        printlog(f"User {user} marked as chosen")
+        printlog(message=f"User {user} marked as chosen")
         return True
 
     except Exception as e:
@@ -326,7 +326,7 @@ def clear_chosen(data: dict = None, filename: str = varfile.database) -> bool:
     try:
         data["chosen"] = []
         save_db(data=data, filename=filename)
-        printlog(f"Chosen users cleared")
+        printlog(message=f"Chosen users cleared")
         return True
 
     except Exception as e:
@@ -345,7 +345,7 @@ def clear_used(data: dict = None, filename: str = varfile.database) -> bool:
     try:
         data["used_codes"] = []
         save_db(data=data, filename=filename)
-        printlog(f"Used codes cleared")
+        printlog(message=f"Used codes cleared")
         return True
 
     except Exception as e:
@@ -364,7 +364,7 @@ def clear_banned(data: dict = None, filename: str = varfile.database) -> bool:
     try:
         data["banned"] = set()
         save_db(data=data, filename=filename)
-        printlog(f"Banned users cleared")
+        printlog(message=f"Banned users cleared")
         return True
 
     except Exception as e:
@@ -382,7 +382,7 @@ def clear_users(data: dict = None, filename: str = varfile.database) -> bool:
     try:
         data["users"] = set()
         save_db(data=data, filename=filename)
-        printlog(f"Users cleared")
+        printlog(message=f"Users cleared")
         return True
 
     except Exception as e:
@@ -400,7 +400,7 @@ def clear_post_id(data: dict = None, filename: str = varfile.database) -> bool:
     try:
         data["post_id"] = None
         save_db(data=data, filename=filename)
-        printlog(f"Post ID cleared")
+        printlog(message=f"Post ID cleared")
         return True
 
     except Exception as e:

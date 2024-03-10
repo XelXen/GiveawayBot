@@ -339,9 +339,9 @@ async def stats(_, message: Message):
 )
 async def settime(_, message: Message):
     try:
-        printlog(f"Setting time to {message.text.split(' ')[1]} hours...")
+        printlog(f"Setting time to {message.command[1]} hours...")
 
-        database.set_time(total=int(message.text.split(" ")[1]) * 3600, left=0)
+        database.set_time(total=float(message.command[1]) * 3600, left=0)
 
         printlog(f"Time set to {root['time']['total']/3600} hours!")
 
