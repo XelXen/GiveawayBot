@@ -21,7 +21,6 @@ app = pyrogram.Client(
     api_id=6,
     api_hash="eb06d4abfb49dc3eeb1aeb98ae0f581e",
     bot_token=varfile.bot_token,
-    in_memory=True,
 )
 
 print("Initializing Configuration...")
@@ -108,9 +107,8 @@ async def poster(client: pyrogram.Client, message: Message):
             ),
         )
 
-        printlog(message=f"Executing DB Commands...")
+        printlog(message=f"Setting Post ID...")
         database.set_post_id(post_id=message_sent.id)
-        database.clear_users()
 
         printlog(message=f"Post sent to channel!")
         await message.reply(text="Sent!")
@@ -130,9 +128,12 @@ async def poster(client: pyrogram.Client, message: Message):
         )
 
         printlog(message="Configuring Variables...")
-        codes = message.text.split(sep="\n")
-        database.clear_chosen()
-        database.add_codes(codes=codes)
+        if message.text != "continue":
+            codes = message.text.split(sep="\n")
+            database.clear_chosen()
+            database.add_codes(codes=codes)
+        else:
+            codes = root["codes"]
 
         printlog(message="Starting Timer...")
         zfill_num = len(str(object=root["time"]["total"]))
@@ -244,10 +245,22 @@ async def start(client: pyrogram.Client, message: Message):
             database.add_user(user=message.from_user.id)
 
             if len(root["users"]) % 10 == 0:
+                msg = await client.get_messages(chat_id=channel_id, message_ids=root["post_id"])
+
                 await client.edit_message_caption(
                     chat_id=channel_id,
                     message_id=root["post_id"],
-                    caption=f"{"\n".join(message.caption.markdown.split("\n")[:-2])}\n\nTotal Registrations: {len(root['users'])}",
+                    caption=f"{"\n".join(msg.caption.markdown.split("\n")[:-2])}\n\nTotal Registrations: {len(root['users'])}",
+                    reply_markup=InlineKeyboardMarkup(
+                        inline_keyboard=[
+                            [
+                                InlineKeyboardButton(
+                                    text="Register!",
+                                    url=f"https://t.me/{varfile.bot_username}?start=register",
+                                )
+                            ]
+                        ]
+                    ),
                 )
 
             printlog(message=f"User {str(object=message.from_user.id)} has registered!")
@@ -341,7 +354,7 @@ async def settime(_, message: Message):
     try:
         printlog(f"Setting time to {message.command[1]} hours...")
 
-        database.set_time(total=float(message.command[1]) * 3600, left=0)
+        database.set_time(total=int(float(message.command[1]) * 3600), left=0)
 
         printlog(f"Time set to {root['time']['total']/3600} hours!")
 
