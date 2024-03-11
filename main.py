@@ -219,6 +219,7 @@ async def poster(client: pyrogram.Client, message: Message):
             + "\n".join([x for x in root["codes"] if x not in root["used_codes"]])
         )
 
+        database.snapshot()
         database.clear_db()
         printlog(message="Bot has been reset!")
 
@@ -266,8 +267,6 @@ async def start(client: pyrogram.Client, message: Message):
             printlog(message=f"User {str(object=message.from_user.id)} has registered!")
 
             await message.reply(text="You're registered!")
-
-        return
 
     elif message.command[1] == "redeem":
 

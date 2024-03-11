@@ -80,6 +80,28 @@ def clear_db(filename: str = varfile.database) -> bool:
     except Exception as e:
         print(e)
         return False
+    
+
+def snapshot(filename: str = varfile.database) -> Union[dict, bool]:
+    try:
+        if not os.path.exists(path="snapshots"):
+            os.makedirs(name="snapshots")
+        
+        current_time = datetime.now().strftime(format="%H-%M-%S")
+        current_date = datetime.now().strftime(format="%Y-%m-%d")
+        snapshot_filename = os.path.join("snapshots", f"snapshot_{current_date}_{current_time}.pickle")
+        
+        with open(file=filename, mode="rb") as f:
+            with open(file=snapshot_filename, mode="wb") as s:
+                s.write(f.read())
+        
+        printlog(message=f"Database snapshot created at {snapshot_filename}")
+
+        return True
+    
+    except Exception as e:
+        print(e)
+        return False
 
 
 def create_db(filename: str = varfile.database) -> Union[dict, bool]:
