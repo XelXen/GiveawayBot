@@ -69,7 +69,7 @@ def clear_db(filename: str = varfile.database) -> bool:
                          "users": set(),
                          "chosen": [],
                          "time": {"total": 0, "left": 0},
-                         "post_id": 0,
+                         "post_id": None,
                          "used_codes": set(),
                          "banned": set()}, file=f)
 
@@ -111,7 +111,7 @@ def create_db(filename: str = varfile.database) -> Union[dict, bool]:
                          "users": set(),
                          "chosen": [],
                          "time": {"total": 0, "left": 0},
-                         "post_id": 0,
+                         "post_id": None,
                          "used_codes": set(),
                          "banned": set()}, file=f)
 
