@@ -287,6 +287,9 @@ async def start(client: pyrogram.Client, message: Message):
             except:
                 printlog(message=f"{code} has been redeemed by {message.from_user.id}")
 
+            if len(root["codes"]) == 0:
+                abort(client, message)
+
 
 @app.on_message(
     filters=filters.command(commands="cleardata", prefixes="/")
