@@ -4,6 +4,9 @@ admins = [0, 0, 0]
 # Auto-abortion time (in seconds)
 auto_abort = 6*60*60
 
+# Send a registration reminder to the group after every 10 registrations (True/False)
+group_stats = True
+
 # Group ID (Always starts with -)
 group_id = -100
 

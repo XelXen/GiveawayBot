@@ -36,6 +36,7 @@ print("Initializing Database...")
 if not os.path.exists(varfile.database):
     database.create_db()
 
+
 class Root:
     def __init__(self, database: database):
         self.database = database
@@ -44,6 +45,7 @@ class Root:
     def __getitem__(self, key):
         self.data = self.database.load_db()
         return self.data[key]
+
 
 root = Root(database=database)
 
@@ -93,7 +95,8 @@ async def poster(client: pyrogram.Client, message: Message):
         printlog(message=f"Sending Post to channel...")
         message_sent = await client.send_photo(
             chat_id=channel_id,
-            caption=message.caption.markdown + "\n\nTotal Registrations: Please wait...",
+            caption=message.caption.markdown
+            + "\n\nTotal Registrations: Please wait...",
             photo=message.photo.file_id,
             reply_markup=InlineKeyboardMarkup(
                 inline_keyboard=[
@@ -231,7 +234,7 @@ async def poster(client: pyrogram.Client, message: Message):
 async def start(client: pyrogram.Client, message: Message):
     if len(message.command) == 1:
         return
-    
+
     if message.command[1] == "register":
         if (
             root["post_id"] == None
@@ -247,7 +250,9 @@ async def start(client: pyrogram.Client, message: Message):
             database.add_user(user=message.from_user.id)
 
             if len(root["users"]) % 10 == 0:
-                msg = await client.get_messages(chat_id=channel_id, message_ids=root["post_id"])
+                msg = await client.get_messages(
+                    chat_id=channel_id, message_ids=root["post_id"]
+                )
 
                 await client.edit_message_caption(
                     chat_id=channel_id,
@@ -264,6 +269,12 @@ async def start(client: pyrogram.Client, message: Message):
                         ]
                     ),
                 )
+
+                if varfile.group_stats:
+                    await client.send_message(
+                        chat_id=group_id,
+                        text=f"{len(root['users'])} users have registered!\n\n[Click here if you haven't registered yet!](https://t.me/{varfile.bot_username}?start=register)",
+                    )
 
             printlog(message=f"User {str(object=message.from_user.id)} has registered!")
 
@@ -284,7 +295,9 @@ async def start(client: pyrogram.Client, message: Message):
             database.mark_used(code=code)
 
             try:
-                printlog(message=f"{code} has been redeemed by {message.from_user.first_name}")
+                printlog(
+                    message=f"{code} has been redeemed by {message.from_user.first_name}"
+                )
             except:
                 printlog(message=f"{code} has been redeemed by {message.from_user.id}")
 
