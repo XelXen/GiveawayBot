@@ -210,7 +210,7 @@ async def poster(client: pyrogram.Client, message: Message):
 
         printlog(message="Starting Timer...\n")
         zfill_num = len(str(object=varfile.auto_abort))
-        for i in range(varfile.auto_abort):
+        for i in range(int(varfile.auto_abort)):
             print(
                 "Time left: " + str(object=varfile.auto_abort - i).zfill(zfill_num),
                 end="\r",
