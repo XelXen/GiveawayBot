@@ -33,7 +33,7 @@ else:
     group_id = varfile.group_id
 
 print("Initializing Database...")
-if not os.path.exists(path=varfile.database):
+if not os.path.exists(varfile.database):
     database.create_db()
 
 class Root:
