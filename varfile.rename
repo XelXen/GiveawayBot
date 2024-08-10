@@ -1,6 +1,9 @@
 # List of admin IDs 
 admins = [0, 0, 0] 
 
+# Auto-abortion time (in seconds)
+auto_abort = 6*60*60
+
 # Group ID (Always starts with -)
 group_id = -100
 
