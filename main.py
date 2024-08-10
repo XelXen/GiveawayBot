@@ -178,7 +178,7 @@ async def poster(client: pyrogram.Client, message: Message):
 
             await client.send_message(
                 chat_id=group_id,
-                text=f"{user.mention()}:[{root['chosen'][i]}](tg://user?id={root['chosen'][i]}) click on the button below to receive your present! You have 12 hours to do so :D",
+                text=f"{user.mention()}:[{root['chosen'][i]}](tg://user?id={root['chosen'][i]}) click on the button below to receive your present! You have {varfile.auto_abort//3600} hours to do so :D",
                 reply_markup=InlineKeyboardMarkup(
                     inline_keyboard=[
                         [
@@ -206,9 +206,10 @@ async def poster(client: pyrogram.Client, message: Message):
         await client.pin_chat_message(chat_id=group_id, message_id=msg.id)
 
         printlog(message="Starting Timer...\n")
-        for i in range(43200):
+        zfill_num = len(str(object=varfile.auto_abort))
+        for i in range(varfile.auto_abort):
             print(
-                "Time left: " + str(object=43200 - i).zfill(zfill_num),
+                "Time left: " + str(object=varfile.auto_abort - i).zfill(zfill_num),
                 end="\r",
             )
             await asyncio.sleep(delay=1)
